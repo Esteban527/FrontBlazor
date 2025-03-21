@@ -1,0 +1,147 @@
+@page "/tipoindicador"
+@using FrontBlazor.Services
+@using FrontBlazor.Models
+@inject ServicioEntidad servicioEntidad
+
+<h3>Gestión de TipoIndicadores</h3>
+
+@if (tipos == null)
+{
+    <p>Cargando...</p>
+}
+else
+{
+    <div class="row">
+        <!-- Formulario -->
+        <div class="col-md-6">
+            <h5>@(modoEdicion ? "Editar TipoIndicador" : "Nuevo TipoIndicador")</h5>
+
+            <button class="btn btn-primary mb-3" @onclick="NuevoTipoIndicador">Nuevo TipoIndicador</button>
+
+            @if (!modoEdicion)
+            {
+                <p class="text-muted">Formulario listo para crear nuevo registro.</p>
+            }
+
+            <EditForm Model="tipoActual" OnValidSubmit="Guardar">
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Nombre</label>
+                    <InputText id="nombre" @bind-Value="tipoActual.Nombre" class="form-control" />
+                </div>
+                <button type="submit" class="btn btn-success">
+                    @(modoEdicion ? "Actualizar" : "Guardar")
+                </button>
+                @if (modoEdicion)
+                {
+                    <button type="button" class="btn btn-secondary ms-2" @onclick="CancelarEdicion">Cancelar</button>
+                }
+            </EditForm>
+        </div>
+
+        <!-- Tabla -->
+        <div class="col-md-6">
+            <h5>Lista de TipoIndicadores</h5>
+
+            @if (tipos.Count == 0)
+            {
+                <p>No hay registros.</p>
+            }
+            else
+            {
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var tipo in tipos)
+                        {
+                            <tr>
+                                <td>@tipo["id"]</td>
+                                <td>@tipo["nombre"]</td>
+                                <td>
+                                    <button class="btn btn-warning btn-sm me-1" @onclick="() => Editar(tipo)">Editar</button>
+                                    <button class="btn btn-danger btn-sm" @onclick="async () => await Eliminar(tipo)">Eliminar</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    List<Dictionary<string, object>> tipos;
+    TipoIndicadorModel tipoActual = new();
+    bool modoEdicion = false;
+    string idActual = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarLista();
+    }
+
+    async Task CargarLista()
+    {
+        tipos = await servicioEntidad.ObtenerTodosAsync("api", "tipoindicador");
+    }
+
+    async Task Guardar()
+    {
+        var entidad = new Dictionary<string, object>
+        {
+            { "nombre", tipoActual.Nombre }
+        };
+
+        if (modoEdicion)
+        {
+            await servicioEntidad.ActualizarAsync("api", "tipoindicador", "id", idActual, entidad);
+            modoEdicion = false;
+        }
+        else
+        {
+            await servicioEntidad.CrearAsync("api", "tipoindicador", entidad);
+        }
+
+        tipoActual = new();
+        idActual = "";
+        await CargarLista();
+    }
+
+    void Editar(Dictionary<string, object> tipo)
+    {
+        tipoActual = new TipoIndicadorModel
+        {
+            Id = Convert.ToInt32(tipo["id"]),
+            Nombre = tipo["nombre"]?.ToString() ?? ""
+        };
+        idActual = tipo["id"].ToString();
+        modoEdicion = true;
+    }
+
+    async Task Eliminar(Dictionary<string, object> tipo)
+    {
+        var id = tipo["id"].ToString();
+        await servicioEntidad.EliminarAsync("api", "tipoindicador", "id", id);
+        await CargarLista();
+    }
+
+    void CancelarEdicion()
+    {
+        tipoActual = new();
+        idActual = "";
+        modoEdicion = false;
+    }
+
+    void NuevoTipoIndicador()
+    {
+        tipoActual = new();
+        idActual = "";
+        modoEdicion = false;
+    }
+}
