@@ -1,0 +1,145 @@
+@page "/unidadmedicion"
+@using FrontBlazor.Services
+@using FrontBlazor.Models
+@inject ServicioEntidad servicioEntidad
+
+<h3>Gestión de Unidades de Medición</h3>
+
+@if (unidades == null)
+{
+    <p>Cargando...</p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-6">
+            <h5>@(modoEdicion ? "Editar Unidad" : "Nueva Unidad")</h5>
+
+            <button class="btn btn-primary mb-3" @onclick="NuevaUnidad">Nueva Unidad</button>
+
+            @if (!modoEdicion)
+            {
+                <p class="text-muted">Formulario listo para crear nuevo registro.</p>
+            }
+
+            <EditForm Model="unidadActual" OnValidSubmit="Guardar">
+                <div class="mb-3">
+                    <label for="descripcion" class="form-label">Descripción</label>
+                    <InputText id="descripcion" @bind-Value="unidadActual.Descripcion" class="form-control" />
+                </div>
+                <button type="submit" class="btn btn-success">
+                    @(modoEdicion ? "Actualizar" : "Guardar")
+                </button>
+                @if (modoEdicion)
+                {
+                    <button type="button" class="btn btn-secondary ms-2" @onclick="CancelarEdicion">Cancelar</button>
+                }
+            </EditForm>
+        </div>
+
+        <div class="col-md-6">
+            <h5>Lista de Unidades</h5>
+
+            @if (unidades.Count == 0)
+            {
+                <p>No hay registros.</p>
+            }
+            else
+            {
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Descripción</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var unidad in unidades)
+                        {
+                            <tr>
+                                <td>@unidad["id"]</td>
+                                <td>@unidad["descripcion"]</td>
+                                <td>
+                                    <button class="btn btn-warning btn-sm me-1" @onclick="() => Editar(unidad)">Editar</button>
+                                    <button class="btn btn-danger btn-sm" @onclick="async () => await Eliminar(unidad)">Eliminar</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    List<Dictionary<string, object>> unidades;
+    UnidadMedicionModel unidadActual = new();
+    bool modoEdicion = false;
+    string idActual = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarLista();
+    }
+
+    async Task CargarLista()
+    {
+        unidades = await servicioEntidad.ObtenerTodosAsync("api", "unidadmedicion");
+    }
+
+    async Task Guardar()
+    {
+        var entidad = new Dictionary<string, object>
+        {
+            { "descripcion", unidadActual.Descripcion }
+        };
+
+        if (modoEdicion)
+        {
+            await servicioEntidad.ActualizarAsync("api", "unidadmedicion", "id", idActual, entidad);
+            modoEdicion = false;
+        }
+        else
+        {
+            await servicioEntidad.CrearAsync("api", "unidadmedicion", entidad);
+        }
+
+        unidadActual = new();
+        idActual = "";
+        await CargarLista();
+    }
+
+    void Editar(Dictionary<string, object> unidad)
+    {
+        unidadActual = new UnidadMedicionModel
+        {
+            Id = Convert.ToInt32(unidad["id"]),
+            Descripcion = unidad["descripcion"]?.ToString() ?? ""
+        };
+        idActual = unidad["id"].ToString();
+        modoEdicion = true;
+    }
+
+    async Task Eliminar(Dictionary<string, object> unidad)
+    {
+        var id = unidad["id"].ToString();
+        await servicioEntidad.EliminarAsync("api", "unidadmedicion", "id", id);
+        await CargarLista();
+    }
+
+    void CancelarEdicion()
+    {
+        unidadActual = new();
+        idActual = "";
+        modoEdicion = false;
+    }
+
+    void NuevaUnidad()
+    {
+        unidadActual = new();
+        idActual = "";
+        modoEdicion = false;
+    }
+}
