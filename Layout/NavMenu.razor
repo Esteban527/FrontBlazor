@@ -14,18 +14,29 @@
                 <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
             </NavLink>
         </div>
+
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
+            <NavLink class="nav-link" href="/CrearRepre">
+                <span class="oi oi-box" aria-hidden="true"></span> Crear
             </NavLink>
         </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
+
+  <div class="nav-item px-3">
+            <NavLink class="nav-link" href="/EditarRepre">
+                <span class="oi oi-box" aria-hidden="true"></span> Editar
             </NavLink>
         </div>
+
+          <div class="nav-item px-3">
+            <NavLink class="nav-link" href="/ElimiRepre">
+                <span class="oi oi-box" aria-hidden="true"></span> Eliminar
+            </NavLink>
+        </div>
+
     </nav>
 </div>
+
+}
 
 @code {
     private bool collapseNavMenu = true;
