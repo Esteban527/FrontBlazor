@@ -1,0 +1,84 @@
+@page "/sentido"  
+@using System.Collections.Generic  
+@using System.Text.Json  
+@using FrontBlazor.Services  
+@inject ServicioEntidad servicioEntidad  
+@inject NavigationManager navegacionManager  
+
+<PageTitle>Sentidos</PageTitle>
+
+<h3>Lista de Sentidos</h3>
+
+@if (sentidos is null)
+{
+    <p>Cargando...</p>
+}
+else if (sentidos.Count == 0)
+{
+    <p>No hay registros.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var sentido in sentidos)
+            {
+                <tr>
+                    <td>@sentido["id"]</td>
+                    <td>@sentido["nombre"]</td>
+                    <td>
+                        <button class="btn btn-warning" @onclick="() => EditarSentido(ObtenerId(sentido))">Editar</button>
+                        <button class="btn btn-danger" @onclick="async () => await EliminarSentido(ObtenerId(sentido))">Eliminar</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<button class="btn btn-primary" @onclick="CrearSentido">Agregar Sentido</button>
+
+@code {
+    private List<Dictionary<string, object>>? sentidos;
+
+    protected override async Task OnInitializedAsync()
+    {
+        sentidos = await servicioEntidad.ObtenerTodosAsync("proyecto", "sentido");
+    }
+
+    private void CrearSentido()
+    {
+        navegacionManager.NavigateTo("/sentido/crear");
+    }
+
+    private void EditarSentido(string id)
+    {
+        navegacionManager.NavigateTo($"/sentido/editar/{id}");
+    }
+
+    private async Task EliminarSentido(string id)
+    {
+        bool confirmado = await servicioEntidad.EliminarAsync("proyecto", "sentido", "id", id);
+        if (confirmado)
+        {
+            sentidos = await servicioEntidad.ObtenerTodosAsync("proyecto", "sentido");
+            StateHasChanged();
+        }
+    }
+
+    private string ObtenerId(Dictionary<string, object> sentido)
+{
+    if (sentido.TryGetValue("id", out var idValor) && idValor != null)
+    {
+        return idValor.ToString() ?? "";
+    }
+    return ""; // Retorna cadena vacía si no encuentra el id
+}
+}
