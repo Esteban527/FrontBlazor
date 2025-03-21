@@ -34,8 +34,8 @@ else
                     <td>@sentido["id"]</td>
                     <td>@sentido["nombre"]</td>
                     <td>
-                        <button class="btn btn-warning" @onclick="() => EditarSentido(ObtenerId(sentido))">Editar</button>
-                        <button class="btn btn-danger" @onclick="async () => await EliminarSentido(ObtenerId(sentido))">Eliminar</button>
+                        <button class="btn btn-warning" @onclick="@( () => EditarSentido(ObtenerId(sentido)) )">Editar</button>
+                        <button class="btn btn-danger" @onclick="@( async () => await EliminarSentido(ObtenerId(sentido)) )">Eliminar</button>
                     </td>
                 </tr>
             }
