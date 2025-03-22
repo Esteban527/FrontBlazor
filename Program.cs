@@ -12,6 +12,7 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 // Lo asocia al elemento HTML con el id "app" en wwwroot/index.html
 builder.RootComponents.Add<App>("#app");
 
+
 // Registra el componente HeadOutlet después del elemento <head> en el documento HTML
 // Esto permite gestionar el contenido dinámico del encabezado HTML desde los componentes Blazor
 // como títulos de página o metadatos

@@ -4,7 +4,9 @@
 @using FrontBlazor.Services  
 @inject ServicioEntidad servicioEntidad  
 @inject NavigationManager navegacionManager  
-<PageTitle>Crear TipoActor</PageTitle>
+
+
+<PageTitle>TipoActorCrear</PageTitle>
 
 <h3>Agregar un nuevo TipoActor</h3>
 
@@ -36,6 +38,7 @@ else
 }
 
 @code {
+    
     private TipoActorModel? modelo;
     private string? errorMensaje = null;
 
