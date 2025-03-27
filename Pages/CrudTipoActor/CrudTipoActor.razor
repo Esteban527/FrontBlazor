@@ -4,6 +4,7 @@
 @using FrontBlazor.Services  
 @inject ServicioEntidad servicioEntidad  
 @inject NavigationManager navegacionManager  
+@inject IJSRuntime JSRuntime
 
 <PageTitle>TipoActor</PageTitle>
 
@@ -65,13 +66,20 @@ else
 
     private async Task EliminarTipoActor(string id)
     {
-        bool confirmado = await servicioEntidad.EliminarAsync("proyecto", "TipoActor", "id", id);
+        // Mostrar cuadro de confirmación
+        bool confirmado = await JSRuntime.InvokeAsync<bool>("confirm", $"¿Estás seguro de que deseas eliminar el registro con ID{id}?");
         if (confirmado)
         {
-            TipoActors = await servicioEntidad.ObtenerTodosAsync("proyecto", "TipoActor");
-            StateHasChanged();
+            bool eliminado = await servicioEntidad.EliminarAsync("proyecto", "TipoActor", "id", id);
+            if (eliminado)
+            {
+                // Actualizar la lista después de eliminar
+                TipoActors = await servicioEntidad.ObtenerTodosAsync("proyecto", "TipoActor");
+                StateHasChanged();
+            }
         }
     }
+
 
     private string ObtenerId(Dictionary<string, object> TipoActor)
 {
