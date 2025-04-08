@@ -1,8 +1,0 @@
-namespace FrontBlazor.Models
-{
-    public class TipoIndicadorModel
-    {
-        public int Id { get; set; }
-        public string Nombre { get; set; }
-    }
-}
