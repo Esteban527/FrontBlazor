@@ -1,4 +1,4 @@
-@page "/EditarRepre/{id}"
+@page "/Repre/editar/{id}"
 @using System.Collections.Generic  
 @using System.Text.Json  
 @using FrontBlazor.Services  
@@ -27,7 +27,7 @@
             <ValidationMessage For="@(() => modelo.Nombre)" />
         </div>
 
-        <button type="submit" class="btn btn-success">Editar</button>
+        <button type="submit" class="btn btn-success">Guardar Cambios</button>
         <button type="button" class="btn btn-secondary" @onclick="Cancelar">Cancelar</button>
     </EditForm>
 }
@@ -90,7 +90,7 @@ else
 
             if (actualizado)
             {
-                navegacionManager.NavigateTo("/EditarRepre");
+                navegacionManager.NavigateTo("/crearRepre");
             }
             else
             {
@@ -105,7 +105,7 @@ else
 
     private void Cancelar()
     {
-        navegacionManager.NavigateTo("/EditarRepre");
+        navegacionManager.NavigateTo("/crearRepre");
     }
 
     private class SentidoModel

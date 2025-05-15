@@ -136,7 +136,7 @@ else
                                     else
                                     {
                                         <button class="btn btn-sm btn-primary"
-                                                @onclick="() => EmpezarEdicion(id, nombre, int.Parse(tipoactor))">
+                                                @onclick="() => Edicion(id, nombre, int.Parse(tipoactor))">
                                             <i class="bi bi-pencil-square"></i> Editar
                                         </button>
                                         <button class="btn btn-sm btn-danger"
@@ -184,8 +184,7 @@ else
     private bool mostrarFormulario = false;
     private void ToggleFormulario() => mostrarFormulario = !mostrarFormulario;
 
-    private const string PROYECTO = "csharpapigenerica";
-    private const string TABLA    = "actor";
+    
 
     protected override async Task OnInitializedAsync()
     {
@@ -199,7 +198,7 @@ else
         errorMensaje = null;
         try
         {
-            actores = await servicioEntidad.ObtenerTodosAsync(PROYECTO, TABLA)
+            actores = await servicioEntidad.ObtenerTodosAsync("csharpapigenerica", "actor")
                       ?? new List<Dictionary<string, object>>();
         }
         catch (Exception ex)
@@ -214,7 +213,7 @@ else
 
     private async Task CargarListasSelect()
     {
-        listaTipoActor = await servicioEntidad.ObtenerTodosAsync(PROYECTO, "tipoactor")
+        listaTipoActor = await servicioEntidad.ObtenerTodosAsync("csharpapigenerica", "tipoactor")
                          ?? new List<Dictionary<string, object>>();
     }
 
@@ -239,7 +238,7 @@ else
             ["fkidtipoactor"]  = nuevoTipoActor
         };
 
-        var ok = await servicioEntidad.CrearAsync(PROYECTO, TABLA, nuevo);
+        var ok = await servicioEntidad.CrearAsync("csharpapigenerica", "actor", nuevo);
         if (ok)
         {
             await CargarActor();
@@ -253,7 +252,7 @@ else
         }
     }
 
-    private void EmpezarEdicion(string id, string nombre, int tipo)
+    private void Edicion(string id, string nombre, int tipo)
     {
         editandoId = id;
         nombreEditado = nombre;
@@ -277,7 +276,7 @@ else
             ["fkidtipoactor"] = tipoactorEditado
         };
 
-        var ok = await servicioEntidad.ActualizarAsync(PROYECTO, TABLA, "id", id, datos);
+        var ok = await servicioEntidad.ActualizarAsync("csharpapigenerica", "actor", "id", id, datos);
         if (ok)
         {
             await CargarActor();
@@ -292,10 +291,10 @@ else
     private async Task EliminarActor(string id)
     {
         errorMensaje = null;
-        var confirmar = await JSRuntime.InvokeAsync<bool>("confirm", $"¿Seguro que quieres elimar el actor con id {id}?");
+        var confirmar = await JSRuntime.InvokeAsync<bool>("confirm", $"Seguro que quieres elimar el actor con id {id}?");
         if (!confirmar) return;
 
-        var ok = await servicioEntidad.EliminarAsync(PROYECTO, TABLA, "id", id);
+        var ok = await servicioEntidad.EliminarAsync("csharpapigenerica", "actor", "id", id);
         if (ok) await CargarActor();
         else errorMensaje = "No se pudo eliminar el actor.";
     }

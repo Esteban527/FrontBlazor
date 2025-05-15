@@ -1,14 +1,13 @@
-@page "/crearRepre"
+@page "/Repre/crear"
 @using System.Collections.Generic  
 @using System.Text.Json  
 @using FrontBlazor.Services  
 @inject ServicioEntidad servicioEntidad  
 @inject NavigationManager navegacionManager  
-@using Microsoft.AspNetCore.Components.Forms
 
-<PageTitle>Crear Representació</PageTitle>
+<PageTitle>Crear Representació Visual</PageTitle>
 
-<h3>Agregar una nueva Representació Visual</h3>
+<h3>Agregar un nuevo represenvisual</h3>
 
 @if (errorMensaje != null)
 {
@@ -16,7 +15,6 @@
         Error: @errorMensaje
     </div>
 }
-
 
 @if (modelo != null)
 {
@@ -29,7 +27,7 @@
             <ValidationMessage For="@(() => modelo.Nombre)" />
         </div>
 
-        <button type="submit" class="btn btn-success">Agregar</button>
+        <button type="submit" class="btn btn-success">Guardar</button>
         <button type="button" class="btn btn-secondary" @onclick="Cancelar">Cancelar</button>
     </EditForm>
 }
@@ -39,12 +37,12 @@ else
 }
 
 @code {
-    private SentidoModel? modelo;
+    private represenvisualModel? modelo;
     private string? errorMensaje = null;
 
     protected override void OnInitialized()
     {
-        modelo = new SentidoModel();  // Inicializar el modelo correctamente
+        modelo = new represenvisualModel();  // Inicializar el modelo correctamente
     }
 
     private async Task Guardar()
@@ -59,19 +57,17 @@ else
 
             var datos = new Dictionary<string, object>
             {
-                { "nombre", modelo.Nombre } 
+                { "nombre", modelo.Nombre }
             };
 
             bool creado = await servicioEntidad.CrearAsync("proyecto", "represenvisual", datos);
             if (creado)
             {
-                navegacionManager.NavigateTo("/CrearRepre");
-                 errorMensaje = null;
-                
+                navegacionManager.NavigateTo("/crearRepre");
             }
             else
             {
-                errorMensaje = "No se pudo crear.";
+                errorMensaje = "No se pudo crear el represenvisual.";
             }
         }
         catch (Exception ex)
@@ -82,11 +78,10 @@ else
 
     private void Cancelar()
     {
-        navegacionManager.NavigateTo("/CrearRepre");
-         errorMensaje = null;
+        navegacionManager.NavigateTo("/represenvisual");
     }
 
-    private class SentidoModel
+    private class represenvisualModel
     {
         public string Nombre { get; set; } = string.Empty;
     }

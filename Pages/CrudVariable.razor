@@ -190,9 +190,6 @@ else
     private bool mostrarFormulario = false;
     private void ToggleFormulario() => mostrarFormulario = !mostrarFormulario;
 
-    private const string PROYECTO = "csharpapigenerica";
-    private const string TABLA    = "variable";
-
     protected override async Task OnInitializedAsync()
     {
         await CargarVariables();
@@ -205,7 +202,7 @@ else
         errorMensaje = null;
         try
         {
-            variables = await servicioEntidad.ObtenerTodosAsync(PROYECTO, TABLA) ?? new();
+            variables = await servicioEntidad.ObtenerTodosAsync("csharpapigenerica", "variable") ?? new();
         }
         catch (Exception ex)
         {
@@ -220,7 +217,7 @@ else
 
     private async Task CargarListasSelect()
     {
-        listaUsuario = await servicioEntidad.ObtenerTodosAsync(PROYECTO, "usuario") ?? new();
+        listaUsuario = await servicioEntidad.ObtenerTodosAsync("csharpapigenerica", "usuario") ?? new();
     }
 
     private async Task CrearVariable()
@@ -235,7 +232,7 @@ else
             ["fkemailusuario"] = nuevoUsuario
         };
 
-        var exito = await servicioEntidad.CrearAsync(PROYECTO, TABLA, nuevo);
+        var exito = await servicioEntidad.CrearAsync("csharpapigenerica", "variable", nuevo);
         if (exito)
         {
             await CargarVariables();
@@ -277,7 +274,7 @@ else
                 ["fkemailusuario"] = usuarioEditado
             };
 
-            var exito = await servicioEntidad.ActualizarAsync(PROYECTO, TABLA, "id", id, datos);
+            var exito = await servicioEntidad.ActualizarAsync("csharpapigenerica", "variable", "id", id, datos);
             if (exito)
             {
                 await CargarVariables();
@@ -301,7 +298,7 @@ else
         );
         if (!confirmado) return;
 
-        var exito = await servicioEntidad.EliminarAsync(PROYECTO, TABLA, "id", id);
+        var exito = await servicioEntidad.EliminarAsync("csharpapigenerica", "variable", "id", id);
         if (exito)
             await CargarVariables();
         else
