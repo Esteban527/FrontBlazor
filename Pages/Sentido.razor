@@ -4,7 +4,6 @@
 @using Services
 @inject ServicioEntidad servicioEntidad         // Inyección del servicio para operaciones CRUD
 @inject NavigationManager navegacionManager       // Inyección del NavigationManager (no se usa en este fragmento)
-
 <div class="container-xl">
     <div class="table-responsive">
         <div class="table-wrapper">
@@ -96,6 +95,7 @@
 <!-- Modal para agregar un sentido -->
 @if (mostrarModal)
 {
+    @inherits ValidacionAcceso
     <div class="modal fade show d-block" style="background: rgba(0, 0, 0, 0.5);">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -127,6 +127,7 @@
 <!-- Modal para editar un sentido -->
 @if (mostrarModalEditar)
 {
+    
     <div class="modal fade show d-block" style="background: rgba(0, 0, 0, 0.5);">
         <div class="modal-dialog">
             <div class="modal-content">
